@@ -3,8 +3,12 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 import time
 
-client_id = 'f53d450d62ad475aaa44f7f0b7109ff3'
+client_id = 'f53d450d62ad475aaa44f7f0b7109ff3'      #IDs taken from Spotify my developer account
 client_secret = 'd3bb12c87076424397cc2cecb4836ea9'
+
+userName = input("Enter your username: ")  # 31am7fsjaw2rcltdcrybgt2aqerm
+
+uri = input('Enter a playlist URI: ') # spotify:playlist:6qyJfp37a1xfvnHlDX4Jsr
 
 client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -19,19 +23,20 @@ def getTrackIDs(user, playlist_id):
     return ids
 
 
-ids = getTrackIDs('31am7fsjaw2rcltdcrybgt2aqerm ', '6qyJfp37a1xfvnHlDX4Jsr')
+ids = getTrackIDs(userName, uri)
+
 
 def getTrackFeatures(id):
-  meta = sp.track(id)
+  data = sp.track(id)
   features = sp.audio_features(id)
 
-  # meta
-  name = meta['name']
-  album = meta['album']['name']
-  artist = meta['album']['artists'][0]['name']
-  release_date = meta['album']['release_date']
-  length = meta['duration_ms']
-  popularity = meta['popularity']
+  # data
+  name = data['name']
+  album = data['album']['name']
+  artist = data['album']['artists'][0]['name']
+  release_date = data['album']['release_date']
+  length = data['duration_ms']
+  popularity = data['popularity']
 
   # features
   acousticness = features[0]['acousticness']
@@ -49,7 +54,6 @@ def getTrackFeatures(id):
   return track
 
 
-# loop over track ids
 tracks = []
 for i in range(len(ids)):
   time.sleep(.5)
