@@ -10,10 +10,12 @@ userName = input("Enter your username: ")  # 31am7fsjaw2rcltdcrybgt2aqerm
 
 uri = input('Enter a playlist URI: ') # spotify:playlist:6qyJfp37a1xfvnHlDX4Jsr
 
-client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+client_credentials_manager = SpotifyClientCredentials(client_id, client_secret) #returns credentials from Developer acct
+
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager) #client credential manager object
 
 
+#gets the spotify IDs of each track by looping through
 def getTrackIDs(user, playlist_id):
     ids = []
     playlist = sp.user_playlist(user, playlist_id)
@@ -23,14 +25,13 @@ def getTrackIDs(user, playlist_id):
     return ids
 
 
-ids = getTrackIDs(userName, uri)
+ids = getTrackIDs(userName, uri) #adds alltrack IDs to a list
 
-
+#returns the features of each track  in a list
 def getTrackFeatures(id):
   data = sp.track(id)
   features = sp.audio_features(id)
 
-  # data
   name = data['name']
   album = data['album']['name']
   artist = data['album']['artists'][0]['name']
@@ -38,7 +39,7 @@ def getTrackFeatures(id):
   length = data['duration_ms']
   popularity = data['popularity']
 
-  # features
+  # features that spotify generates
   acousticness = features[0]['acousticness']
   danceability = features[0]['danceability']
   energy = features[0]['energy']
@@ -53,7 +54,7 @@ def getTrackFeatures(id):
            danceability, energy, instrumentalness, liveness, loudness, speechiness, tempo, time_signature]
   return track
 
-
+#loops through the list of IDs and creates a list of tracks that includes each feature
 tracks = []
 for i in range(len(ids)):
   time.sleep(.5)
@@ -63,4 +64,4 @@ for i in range(len(ids)):
 # create dataset
 df = pd.DataFrame(tracks, columns=['name', 'album', 'artist', 'release_date', 'length', 'popularity', 'danceability', 'acousticness',
                                    'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'time_signature'])
-df.to_csv("spotify.csv", sep=',')
+df.to_csv("spotify.csv", sep=',') #creates CSV file
